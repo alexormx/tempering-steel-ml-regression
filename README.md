@@ -1,30 +1,75 @@
-# Proyecto 3 – Predicción de resistencia a tracción en aceros
+# Proyecto 3 – Predicción de dureza final en aceros templados
 
-Este proyecto utiliza Machine Learning tradicional para predecir la resistencia a tracción (MPa) de aceros, usando el dataset `matbench_steels` de Matbench/Materials Project.
+Este proyecto aplica Machine Learning tradicional para predecir la **dureza final (HRC)** de aceros al carbono y baja aleación, a partir de su composición química y parámetros de tratamiento térmico (templado y revenido).
 
-## Estructura de carpetas
-- `notebooks/`: notebooks paso a paso
-- `data/`: datasets locales
-- `models/`: modelos entrenados
-- `mlruns/`: logs de MLflow
+## 📦 Dataset
 
-## Configuración del entorno virtual
-Para activar el entorno virtual en Linux/MacOS:
+El dataset fue extraído de Kaggle:  
+📌 *Tempering Data for Carbon and Low Alloy Steels*  
+Incluye más de 1000 observaciones con las siguientes variables:
 
-```bash
-source .venv/bin/activate
+- Composición química: C, Mn, P, S, Si, Ni, Cr, Mo, V, Al, Cu (% en peso)
+- Parámetros del revenido: tiempo (s) y temperatura (°C)
+- Tipo de acero (Steel Type), fuente y dureza final medida (HRC)
+
+El dataset fue limpiado y procesado, eliminando la columna `Initial Hardness` por alta cantidad de valores faltantes.
+
+## 🧪 Objetivo del proyecto
+
+Predecir la **dureza final HRC** post-templado y revenido usando modelos de regresión supervisada.
+
+## 📁 Estructura del proyecto
+
+```
+.
+├── data/                   # Datos originales y limpios
+├── processed_data/        # Conjuntos de train/val/test
+├── models/                # Modelos entrenados (.pkl)
+├── mlruns/                # Experimentos registrados con MLflow
+├── notebooks/
+│   ├── 01_eda.ipynb             # Análisis exploratorio de datos
+│   ├── 02_preprocessing.ipynb   # Limpieza, escalado, codificación
+│   ├── 03_training_validation.ipynb # Entrenamiento y validación de modelos
+│   └── 04_evaluation_export.ipynb   # Evaluación final y exportación
+└── requirements.txt       # Librerías requeridas
 ```
 
-En Windows:
+## 🧠 Modelos evaluados
 
-```bat
-.venv\Scripts\activate
+Se entrenaron y compararon los siguientes modelos:
+
+- **Regresión Lineal**
+- **Ridge**
+- **Lasso**
+- **Random Forest**
+
+El mejor desempeño fue obtenido con **Random Forest**, con los siguientes resultados sobre el conjunto de validación:
+
+```
+MSE: 3.95
+MAE: 1.36
 ```
 
-Instala las dependencias con:
+## 🧪 Evaluación final
 
-```bash
-pip install -r requirements.txt
+Evaluado en el conjunto de prueba:
+
+```
+MSE: 6.95
+MAE: 1.73
 ```
 
-Recuerda mantener el entorno activado para ejecutar scripts y notebooks del proyecto.
+## 🧰 Herramientas utilizadas
+
+- Python 3.10
+- pandas, numpy, scikit-learn, seaborn, matplotlib
+- MLflow para registro de experimentos
+- Jupyter Notebooks para desarrollo iterativo
+
+## 📌 Consideraciones
+
+- Se descartaron columnas con más del 80% de valores faltantes
+- Se utilizó codificación one-hot para variables categóricas
+- Se aplicó `StandardScaler` a las variables numéricas
+- Se utilizó `train_test_split` con partición 60/20/20
+- Se entrenó con validación manual y `RandomizedSearchCV`
